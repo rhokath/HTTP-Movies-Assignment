@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import MovieCard from "./MovieCard";
+import { red } from "ansi-colors";
 export default class Movie extends React.Component {
   constructor(props) {
     super(props);
@@ -30,6 +31,17 @@ export default class Movie extends React.Component {
     const addToSavedList = this.props.addToSavedList;
     addToSavedList(this.state.movie);
   };
+  deleteMovie = () => {
+    axios.delete(`http://localhost:5000/api/movies/${this.props.match.params.id}`)
+    .then(res =>{
+      console.log(res.data)
+      // const newArray = this.state.movies.filter(movie => movie.id !== res.data)
+      // this.setState({movies: newArray})
+      // console.log("state", this.state.movies)
+      this.props.history.push('/')
+    })
+    .catch(err => console.log(err.response));
+  }
 
   render() {
     if (!this.state.movie) {
@@ -42,6 +54,10 @@ export default class Movie extends React.Component {
         <div className="save-button" onClick={this.saveMovie}>
           Save
         </div>
+        <button className="edit-button"
+        onClick={()=> this.props.history.push(`/update-movie/${this.state.movie.id}`)}
+        >update</button>
+        <button className="delete-button" onClick={this.deleteMovie}>delete?</button>
       </div>
     );
   }
